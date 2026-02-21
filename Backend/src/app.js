@@ -1,34 +1,61 @@
-const express = require('express')
+const express = require("express");
+const noteModel = require("./models/note.model")
 
-const app = express()
+const app= express()
 app.use(express.json())
-const notes = []
 
-app.post('/notes',(req,res)=>{
+app.post("/notes",async(req,res)=>{
 
-    notes.push(req.body)
+    const data = req.body
+
+    noteModel.create({
+        title: data.title,
+        description: data.description,
+        age: data.age
+
+    })
     res.status(201).json({
-        message: "Note created successfully",
+        message: "Note created successfully"
     })
 })
 
-app.get('/notes',(req,res)=>{
+app.get("/notes",async(req,res)=>{
+
+    const allNotes = await noteModel.find()
+
     res.status(200).json({
-        message: "Notes retrieved successfully",
-        data: notes
+
+        message: "All notes",
+        data: allNotes
     })
 })
 
-app.delete('/notes/:index',(req,res)=>{
+app.delete("/notes/:id",async (req,res)=>{
 
-    const index = req.params.index
-    delete notes[index]
-    res.status(200).json({
+    const id = req.params.id
 
-        message: "Note deleted successfully",
+    await noteModel.findOneAndDelete({
+        _id:id
     })
-    
-}
-)
+    res.status(200).json({
+        message: "note deleted successfully"
+    })
+})
 
+app.patch("/notes/:id",async(req,res)=>{
+
+    const index = req.params.id
+
+    const data = req.body.title
+    const data2 = req.body.description
+    const data3 = req.body.age
+
+    await noteModel.findOneAndUpdate({
+        _id:index
+    },{
+        title: data,
+        description: data2,
+        age: data3  
+    })
+})
 module.exports = app
