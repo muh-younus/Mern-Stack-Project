@@ -5,6 +5,17 @@ async function register(req,res){
 
     const {username,email,password} = req.body;
 
+      const userExists = await userModel.findOne({
+        email
+      })
+
+      if(userExists){
+
+        res.status(409).json({
+            message: 'user exists'
+        })
+      }
+
     const users = await userModel.create({
         username,
         email,
@@ -15,10 +26,10 @@ async function register(req,res){
     const token =jwt.sign({
         id:users._id,
     },process.env.JWT_SECRET)
+    res.cookie('myToken',token)
 
     res.status(201).json({
         message:'User registered successfully',
-        token,
         users
     })
 }
