@@ -4,16 +4,26 @@ const spotifySchema = new mongoose.Schema({
     
         username: {
             type: String,
-            required: true
-        },
-        email: {
-            type: string,
+            required: true,
             unique: true
         },
-        password: string
+        email: {
+            type: String,
+            unique: true,
+            unique: true
+        },
+        password: {
+            type: String,
+            required: true
+        },
+        role: {
+            type: String,
+            enum:['user', 'artist'],
+            default: 'user'
+        }
     
 })
    
-const userModel = mongoose.model('Spotify', spotifySchema)
+const userModel = mongoose.model('spotify', spotifySchema)
 
 module.exports = userModel
