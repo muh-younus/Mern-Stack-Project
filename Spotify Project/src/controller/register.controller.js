@@ -80,9 +80,11 @@ const login = async (req, res) => {
             id: user._id,
             role:user.role
         },process.env.JWT_SECRET)
+        console.log("the token: ", token)
 
         // Set token in cookie
         res.cookie('token', token)
+        console.log("the cookie: ", res.cookie)
 
         res.status(200).json({
             message: 'Login successful',
