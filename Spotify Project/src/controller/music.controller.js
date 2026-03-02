@@ -1,32 +1,13 @@
 const musicModel = require('../model/music.model')
 const jwt = require('jsonwebtoken')
+const albumModel = require('../model/album.model')
 const { uploadFile } = require('../service/storage.service')
 
 async function createMusic(req, res) {
 
-    console.log("Request body:", req.body)
-    console.log("Request cookies:", req.cookies)
-    console.log("Request file:", req.file)
-
-    // ✅ Get token from cookies
-    const token = req.cookies.token
-
-    if (!token) {
-        return res.status(401).json({
-            message: "Unauthorized - No token in cookies"
-        })
-    }
-
-    try {
-        // ✅ Verify token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
-
-        // ✅ Check role
-        if (decoded.role !== 'artist') {
-            return res.status(403).json({
-                message: "You are not authorized to create music"
-            })
-        }
+    
+    
+        
 
         const { title } = req.body
         const file = req.file
@@ -44,7 +25,7 @@ async function createMusic(req, res) {
         const music = new musicModel({
             uri: result.url,
             title,
-            artist: decoded.id
+            artist: req.user.id
         })
 
         await music.save()
@@ -54,13 +35,41 @@ async function createMusic(req, res) {
             music
         })
 
-    } catch (error) {
-        console.log("JWT Error:", error.message)
-
-        return res.status(401).json({
-            message: "Invalid or expired token"
-        })
     }
-}
 
-module.exports = { createMusic }
+    
+        
+  
+
+
+async function createAlbum(req,res){
+
+    
+    
+        
+
+        const {title,music} = req.body
+
+        const album = new albumModel({
+
+            title,
+            artist: req.user.id,
+            music:music
+        })
+        
+        res.status(201).json({
+            message:"Album created successfully",
+            album:{
+
+                id:album._id,
+                title:album.title,
+                artist:album.artist,
+                music:album.music
+            }
+        })  
+
+    }
+
+
+
+module.exports = { createMusic, createAlbum }
