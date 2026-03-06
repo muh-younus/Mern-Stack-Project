@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const bcrypt = require('bcryptjs')
+const validator = require('validator')
 
 const userSchema =new mongoose.Schema({
 
@@ -8,7 +9,7 @@ const userSchema =new mongoose.Schema({
         required:[true,"Email is required for creating an account"],
         trim:true,//no space
         lowercase: true,
-        match:[/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/,"Invalid Email Address"],
+        match:[/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,"Invalid Email Address"],
         unique: [true,"Email already Exists"]
     },
 
@@ -28,15 +29,16 @@ const userSchema =new mongoose.Schema({
     timestamps: true// when user create or update
 })
 
-userSchma.pre("save",async function(next){
+
+userSchema.pre("save",async function(next){
 
     if(!this.isModified("password")){
-        return next()
+    
     }
 
     const hash = await bcrypt.hash(this.password,10)
     this.password - hash
-    return next()
+    
 })
 
 userSchema.methods.comparePassword = async function (password){

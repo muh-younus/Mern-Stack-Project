@@ -1,8 +1,12 @@
 const express = require('express')
 const app = express()
-const mongoDB = require('./config/db')
+const authRoutes = require("./routes/auth.routes")
+const cookieParser = require("cookie-parser")
 
-mongoDB()
+app.use(express.json())
+app.use(cookieParser)
+app.use("/api/auth",authRoutes)
+
 
 
 module.exports = app
