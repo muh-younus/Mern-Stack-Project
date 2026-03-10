@@ -70,6 +70,16 @@ async function createAlbum(req,res){
 
     }
 
+async function getMusic(req,res){
+        
+        const music = await musicModel.find().populate("artist","email")
+
+        res.status(200).json({
+            message: "Music fetched successfully",
+            musics: music
+        })
+    }
 
 
-module.exports = { createMusic, createAlbum }
+
+module.exports = { createMusic, createAlbum, getMusic }

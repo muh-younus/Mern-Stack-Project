@@ -11,5 +11,6 @@ const upload = multer({
 })
 router.post('/upload',authMiddleware.authArtist, upload.single('file'), musicController.createMusic)
 router.post('/album',authMiddleware.authArtist,musicController.createAlbum)
+router.get('/',authMiddleware.authUser,musicController.getMusic)
 
 module.exports = router

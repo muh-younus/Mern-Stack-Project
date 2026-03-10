@@ -1,14 +1,15 @@
 import React from "react";
 import axios from "axios"
+import { useNavigate } from "react-router-dom";
 
 function CreatePost() {
-
+const navigate = useNavigate()
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);    
     axios.post('http://localhost:3000/post', formData)
     .then((res)=>{
-      console.log('the response is ', res.data) 
+      navigate('/feedback')
     })
     .catch((err)=>{
       console.error('Error creating post:', err);

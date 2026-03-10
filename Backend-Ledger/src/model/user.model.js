@@ -22,7 +22,7 @@ const userSchema =new mongoose.Schema({
     password:{
         type: String,
         required: [true,"Password is required for creating an account"],
-        minLenght: [6,"password should be greater than 6 character or digit"],
+        minlenght: [3,"password should be greater than 6 character or digit"],
         select: false
     }
 },{
@@ -30,14 +30,11 @@ const userSchema =new mongoose.Schema({
 })
 
 
-userSchema.pre("save",async function(next){
+userSchema.pre("save", async function(next){
+    if(!this.isModified("password")) return next()
 
-    if(!this.isModified("password")){
-    
-    }
-
-    const hash = await bcrypt.hash(this.password,10)
-    this.password - hash
+    const hash = await bcrypt.hash(this.password, 10)
+    this.password = hash  // ✅ assign correctly
     
 })
 

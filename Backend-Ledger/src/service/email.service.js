@@ -21,4 +21,35 @@ transporter.verify((error, success) => {
   }
 });
 
-module.exports = transporter;
+// Function to send email
+const sendEmail = async (to, subject, text, html) => {
+  try {
+    const info = await transporter.sendMail({
+      from: `"Backend-Ledger" <${process.env.EMAIL_USER}>`, // sender address
+      to, // list of receivers
+      subject, // Subject line
+      text, // plain text body
+      html, // html body
+    });
+
+    console.log('Message sent: %s', info.messageId);
+    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
+};
+
+async function sendRegisterationEmail(userEmail,name){
+
+    const subject = 'welcome to Backend Ledger';
+    const text = `hello ${name} Thank You`;
+    const html = '<p>hello ia am Younus</p>'
+    await sendEmail(userEmail,subject,text,html)
+
+}
+
+
+
+module.exports = {
+    sendRegisterationEmail
+}

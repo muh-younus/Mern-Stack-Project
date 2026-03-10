@@ -32,4 +32,31 @@ async function authArtist(req,res,next){
 
 }
 
-module.exports = {authArtist}
+async function authUser(req,res,next){
+
+    const token = req.cookies.token;
+
+    if(!token){
+
+        return res.status(401).json({
+            message: "unauthorized user"
+        })
+    }
+
+    try{
+     
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        if(decoded.role !== "user"){
+            return res.status(403).json({
+                message: "You don't have access"
+            })
+        }
+        req.user=decoded
+
+
+    }catch(err){
+
+    }
+}
+
+module.exports = {authArtist,authUser}
