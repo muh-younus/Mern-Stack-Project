@@ -27,6 +27,7 @@ async function login(req,res){
     if(!isMatch){return res.status(401).json({message: "Not match credential"})}
 
     const token = jwt.sign({id:user._id},process.env.SECRET_KEY,{expiresIn:"1h"});
+    res.cookie('token',token)
     res.json({
         token,
         email,
@@ -107,7 +108,7 @@ async function deleteRequest(req,res){
 
     try{
         await User.findByIdAndDelete(id)
-        return res.status(204).json({
+        return res.status(200).json({
             message: "Data deleted successfully"
         })
     }catch(err){
