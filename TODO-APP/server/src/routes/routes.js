@@ -1,11 +1,13 @@
 const express = require('express')
-const createController = require('../cotroller/create.controller')
+const {createTodo,gettodo,getById} = require('../cotroller/create.controller')
 const routes =express.Router()
 
 routes.get("/",(req,res)=>{
     res.send("hello")
 })
 
-routes.post('/add',createController)
+routes.post('/add',createTodo)
+routes.get('/get',gettodo)
+routes.get('/get/:id',getById)
 
 module.exports=routes
