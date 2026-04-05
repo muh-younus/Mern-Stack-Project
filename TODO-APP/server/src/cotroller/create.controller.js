@@ -44,7 +44,7 @@ const gettodo = async (req,res)=>{
 
     try{
 
-        const {search, sort, page=1,limit=5 } =req.query
+        const {search, sort, page=1,limit=20 } =req.query
 
         //Base query
         let query = {};
@@ -60,9 +60,7 @@ const gettodo = async (req,res)=>{
         //pagination
         const skip = (page - 1 ) * limit;
 
-        const todos = await modelTodo.find(query)
-        .sort(sortOption).skip(skip)
-        .limit(parseInt(limit))
+        const todos = await modelTodo.find(query).sort(sortOption).skip(skip).limit(parseInt(limit))
         const totalTodos= await modelTodo.countDocuments(query)
 
         return res.status(200).json({
