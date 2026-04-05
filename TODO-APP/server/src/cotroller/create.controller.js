@@ -1,9 +1,8 @@
 const modelTodo = require('../model/todo.model')
 const mongoose = require('mongoose')
+const {asyncHandler} = require('../middleware/asyncHandler')
 
-const createTodo = async (req,res)=>{
-
-    try{
+const createTodo = asyncHandler(async (req,res)=>{
 
         const {title, description} = req.body;
         console.log(title,description)
@@ -30,19 +29,14 @@ const createTodo = async (req,res)=>{
             newTodo
         })
 
-    }catch(err){
-        res.status(500).json({
-            success: false,
-            message: err.message
-        })
+   
+      
 
-    }
+})
 
-}
+const gettodo = asyncHandler(async (req,res)=>{
 
-const gettodo = async (req,res)=>{
-
-    try{
+    
 
         const {search, sort, page=1,limit=20 } =req.query
 
@@ -72,22 +66,13 @@ const gettodo = async (req,res)=>{
             data: todos
         })
 
-    }catch(err){
-
-        return res.status(500).json({
-            success: false,
-            message: "internal server error",
-            error: err.message
-        })
-
-    }
 
 
-}
+})
 
-const getById = async (req,res)=>{
+const getById = asyncHandler(async (req,res)=>{
 
-    try{
+    
 
         const {id} = req.params
         console.log("id",id)
@@ -117,14 +102,102 @@ const getById = async (req,res)=>{
         })
 
 
-    }catch(error){
-        return res.status(500).json({
+   
+})
 
-            message: "internal server error",
-            error: error.message,
-            success: false
+const update = asyncHandler(async (req, res)=>{
+
+    const {id} = req.params
+    const {title,description} = req.body
+
+    if(!mongoose.Types.ObjectId.isValid(id)){
+
+        return res.status(400).json({
+            success: false,
+            message: "invalid id"
         })
     }
-}
 
-module.exports = {createTodo,gettodo,getById}
+    if(!title || title.trim()===""){
+        return res.status(400).json({
+            success: false,
+            message: "Title is required"
+        })
+    }
+
+    const updateTodo = await modelTodo.findByIdAndUpdate(
+        id,
+    {
+        title,description
+    },
+{
+    new: true
+})
+
+return res.status(200).json({
+    success: true,
+    message: "Todo updated successfullp",
+    data: updateTodo
+})
+
+
+if(!updateTodo){
+    return res.status(404).json({
+        success: false,
+        message: "Todo not found"
+    })
+}
+})
+
+const updatewithPatch = asyncHandler(async (req, res)=>{
+
+    const {id} =req.params
+
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({
+            success: false,
+            message: "invalid id"
+
+        })
+    }
+
+    const todo = await modelTodo.findById(id)
+    if(!todo){
+        return res.status(404).json({
+            success: false,
+            message: "Todo not found"
+        })
+    }
+    console.log("before",todo.isCompleted)
+
+    todo.isCompleted = !todo.isCompleted
+    console.log("after", todo.isCompleted)
+
+    await todo.save()  
+    return res.status(200).json({
+        success: true,
+        message: "Todo updated successfully",
+        data: todo
+    }) 
+})
+
+const deleteTodo = asyncHandler(async (req, res)=>{
+
+    const {todo}= req.params
+
+    if(!mongoose.Types.ObjectId.isValid(todo)){
+        return res.status(400).json({
+            success: false,
+            message: "id is invalid"
+        })
+    }
+
+    const deleteTodo = await modelTodo.findByIdAndDelete(todo)
+
+    return res.status(200).json({
+        message: "delete todo successfully",
+        deleteTodo
+    })
+})
+
+module.exports = {createTodo,gettodo,getById,update,updatewithPatch,deleteTodo}
