@@ -8,6 +8,9 @@ import AddProduct from "./admin/AddProduct";
 import ProductList from "./admin/ProductList";
 import Cart from "./pages/Cart";
 import Navbar from "./components/Navbar";
+import CheckoutAddress from "./pages/CheckoutAddress";
+import Checkout from "./pages/checkout";
+import Ordersuccess from "./pages/orderSuccess";
 function Layout() {
   return (
     <>
@@ -19,6 +22,7 @@ function Layout() {
 
 const router = createBrowserRouter([
   {
+    
     element: <Layout />,
     children: [
       { path: "/", element: <Home /> },
@@ -31,6 +35,9 @@ const router = createBrowserRouter([
       { path: "/admin/products", element: <ProductList /> },
       { path: "/admin/products/add", element: <AddProduct /> },
       { path: "/admin/products/update/:id", element: <EditProduct /> },
+      {path: "/checkout-address", element: <CheckoutAddress />},
+      {path: "/checkout", element: <Checkout/>},
+      { path: "/order-success/:id", element: <Ordersuccess/>}
     ],
   },
 ]);
