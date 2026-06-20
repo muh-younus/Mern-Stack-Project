@@ -1,0 +1,12 @@
+{
+  "name": "revise-node",
+  "version": "1.0.0",
+  "scripts":{
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "yarn": "^1.22.22"
+  }
+}
