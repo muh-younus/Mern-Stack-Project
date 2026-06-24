@@ -1,0 +1,10 @@
+h1{
+    color: peru;
+    font: 13px;
+    font-style: calc();
+
+}
+.card{
+    background-color: black;
+    color: white;
+}
